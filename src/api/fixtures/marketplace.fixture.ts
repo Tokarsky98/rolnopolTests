@@ -1,6 +1,7 @@
 import { getAuthHeader } from '@_api/factories/auth-header.factory';
 import { userTest } from '@_api/fixtures/user.fixture';
 import { MarketplaceRequest } from '@_api/requests/marketplace.request';
+import { expect } from '@playwright/test';
 
 type MarketplaceApiHelper = {
   trackOfferCleanup: (token: string) => void;
@@ -29,12 +30,17 @@ export const marketplaceTest = userTest.extend<MarketplaceFixtures>({
         getAuthHeader(token),
       );
       const response = await marketplaceRequest.getMyOffers();
+      await expect(response).toBeOK();
       const body = (await response.json()) as {
         data: { offers: { id: number; status: string }[] };
       };
 
       for (const offer of body.data.offers) {
         if (offer.status === 'active') {
+          // Known app bug: reused numeric user/animal IDs can make an old,
+          // already-deleted seller's offer show up under a new user's "My
+          // Offers", even though cancelling it is then rejected with 403.
+          // Nothing to clean up in that case, so the failure is ignored here.
           await marketplaceRequest.cancelOffer(offer.id);
         }
       }

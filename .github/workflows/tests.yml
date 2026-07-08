@@ -1,0 +1,107 @@
+name: Playwright Tests
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+concurrency:
+  group: playwright-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  tests:
+    name: Run Tests
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout repositories
+      - name: Checkout test repository
+        uses: actions/checkout@v4
+        with:
+          path: tests
+      - name: Checkout application repository
+        uses: actions/checkout@v4
+        with:
+          repository: jaktestowac/rolnopol
+          path: app
+
+      # Setup node
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: tests/package-lock.json
+
+      # Cache dependencies
+      - name: Get Playwright version
+        id: playwright-version
+        working-directory: tests
+        run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages?.['node_modules/@playwright/test']?.version)")" >> $GITHUB_ENV
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+      - name: Cache test dependencies
+        uses: actions/cache@v4
+        id: cache-tests
+        with:
+          path: tests/node_modules
+          key: modules-tests-${{ hashFiles('tests/package-lock.json') }}
+      - name: Cache app dependencies
+        uses: actions/cache@v4
+        id: cache-app
+        with:
+          path: app/node_modules
+          key: modules-app-${{ hashFiles('app/package-lock.json') }}
+
+      # Install dependencies
+      - name: Install test dependencies
+        if: steps.cache-tests.outputs.cache-hit != 'true'
+        working-directory: tests
+        run: npm ci
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        working-directory: tests
+        run: npx playwright install --with-deps chromium
+      - name: Install app dependencies
+        if: steps.cache-app.outputs.cache-hit != 'true'
+        working-directory: app
+        run: npm ci
+
+      # Start application server
+      - name: Start rolnopol app
+        run: |
+          cd app && npm start &
+          npx wait-on http://localhost:3000 --timeout 60000
+
+      # Run tests
+      - name: Run Playwright tests
+        working-directory: tests
+        env:
+          BASE_URL: http://localhost:3000
+        run: npx playwright test --retries=1
+
+      # Upload results
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-reports
+          path: |
+            tests/playwright-report/**/*.*
+            tests/test-results/**/*.*
+          retention-days: 7
+      - name: Publish test report
+        if: success() || failure()
+        uses: mikepenz/action-junit-report@v5
+        with:
+          report_paths: 'tests/playwright-report/results.xml'
