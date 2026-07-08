@@ -12,6 +12,8 @@ type MarketplaceFixtures = {
 };
 
 export const marketplaceTest = userTest.extend<MarketplaceFixtures>({
+  // Cancels any offer left active for a tracked user's token after the test.
+  // Offers are never hard-deleted by the app, so cancelling is the only cleanup available.
   marketplaceApiHelper: async ({ request }, use) => {
     const tokensToClean: string[] = [];
 
@@ -39,6 +41,7 @@ export const marketplaceTest = userTest.extend<MarketplaceFixtures>({
     }
   },
 
+  // Ready-made marketplace client authenticated as the fixture's default user.
   marketplaceRequest: async ({ request, createUser }, use) => {
     await use(new MarketplaceRequest(request, getAuthHeader(createUser.token)));
   },

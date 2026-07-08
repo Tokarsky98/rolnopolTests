@@ -13,6 +13,8 @@ type AuthenticatedUserFixtures = {
   loggedInUserWithAnimal: AuthenticatedUserWithAnimal;
 };
 
+// Injects a session cookie for a user created via the API, so UI tests can
+// start already logged in instead of going through the login form.
 export const authenticatedUserTest =
   loginFixturesTest.extend<AuthenticatedUserFixtures>({
     loggedInUser: async ({ context, createUser }, use) => {

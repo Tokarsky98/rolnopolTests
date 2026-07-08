@@ -17,6 +17,7 @@ type AnimalFixtures = {
   animalApiHelper: AnimalApiHelper;
 };
 
+// Creates animals via the API for a given user and deletes them all after the test.
 export const animalTest = base.extend<AnimalFixtures>({
   animalApiHelper: async ({ request }, use) => {
     const createdAnimals: { id: number; token: string }[] = [];
