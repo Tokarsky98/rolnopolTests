@@ -1,6 +1,7 @@
-import { userTest } from '@_api/fixtures/user.fixture';
+import { marketplaceTest } from '@_api/fixtures/marketplace.fixture';
+import { authenticatedUserTest } from '@_ui/fixtures/authenticated-user.fixture';
 import { mergeTests } from '@playwright/test';
 
-export const test = mergeTests(userTest);
+export const test = mergeTests(authenticatedUserTest, marketplaceTest);
 
 export { expect } from '@playwright/test';
