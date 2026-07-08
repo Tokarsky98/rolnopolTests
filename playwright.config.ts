@@ -18,7 +18,7 @@ export default defineConfig({
     baseURL: BASE_URL,
     actionTimeout: 5_000,
     navigationTimeout: 5_000,
-    testIdAttribute: 'data-test',
+    testIdAttribute: 'data-testid',
     trace: 'retain-on-failure',
     video: 'retain-on-failure',
     screenshot: 'only-on-failure',
