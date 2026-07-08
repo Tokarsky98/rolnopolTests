@@ -1,0 +1,47 @@
+// Must match the allowed keys in rolnopol/data/animal-types.js (case-sensitive).
+export type AnimalType =
+  | 'chicken'
+  | 'chick'
+  | 'cow'
+  | 'pig'
+  | 'majesticHog'
+  | 'piglet'
+  | 'sheep'
+  | 'lamb'
+  | 'goat'
+  | 'duck'
+  | 'turkey'
+  | 'rabbit'
+  | 'fish'
+  | 'shrimp'
+  | 'oyster'
+  | 'squid'
+  | 'kraken'
+  | 'wyvern'
+  | 'moth'
+  | 'aiHarvester'
+  | 'aiDrone'
+  | 'aiAssistant'
+  | 'aiRobot'
+  | 'dinosaur'
+  | 'diplodocus'
+  | 'unicorn'
+  | 'ent'
+  | 'voidBeast'
+  | 'rat'
+  | 'goose'
+  | 'snail'
+  | 'bee'
+  | 'hedgehog'
+  | 'owl'
+  | 'lobster'
+  | 'yak'
+  | 'boar'
+  | 'ant'
+  | 'tardigrade'
+  | 'tortoise';
+
+export interface AnimalModel {
+  type: AnimalType;
+  amount: number;
+}
