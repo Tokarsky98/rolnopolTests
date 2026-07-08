@@ -3,7 +3,8 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
-  timeout: 45_000,
+  // CI runners are slower than local dev, give tests more headroom there.
+  timeout: process.env.CI ? 60_000 : 45_000,
   expect: { timeout: 10_000 },
   // Single worker: the app can't reliably handle concurrent login/register requests.
   fullyParallel: true,

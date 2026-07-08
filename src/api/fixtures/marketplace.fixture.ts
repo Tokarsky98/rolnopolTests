@@ -1,6 +1,7 @@
 import { getAuthHeader } from '@_api/factories/auth-header.factory';
 import { userTest } from '@_api/fixtures/user.fixture';
 import { MarketplaceRequest } from '@_api/requests/marketplace.request';
+import { expect } from '@playwright/test';
 
 type MarketplaceApiHelper = {
   trackOfferCleanup: (token: string) => void;
@@ -29,13 +30,15 @@ export const marketplaceTest = userTest.extend<MarketplaceFixtures>({
         getAuthHeader(token),
       );
       const response = await marketplaceRequest.getMyOffers();
+      await expect(response).toBeOK();
       const body = (await response.json()) as {
         data: { offers: { id: number; status: string }[] };
       };
 
       for (const offer of body.data.offers) {
         if (offer.status === 'active') {
-          await marketplaceRequest.cancelOffer(offer.id);
+          const cancelResponse = await marketplaceRequest.cancelOffer(offer.id);
+          await expect(cancelResponse).toBeOK();
         }
       }
     }
