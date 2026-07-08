@@ -1,6 +1,6 @@
 import { getAuthHeader } from '@_api/factories/auth-header.factory';
+import { userTest } from '@_api/fixtures/user.fixture';
 import { MarketplaceRequest } from '@_api/requests/marketplace.request';
-import { test as base } from '@playwright/test';
 
 type MarketplaceApiHelper = {
   trackOfferCleanup: (token: string) => void;
@@ -8,9 +8,10 @@ type MarketplaceApiHelper = {
 
 type MarketplaceFixtures = {
   marketplaceApiHelper: MarketplaceApiHelper;
+  marketplaceRequest: MarketplaceRequest;
 };
 
-export const marketplaceTest = base.extend<MarketplaceFixtures>({
+export const marketplaceTest = userTest.extend<MarketplaceFixtures>({
   marketplaceApiHelper: async ({ request }, use) => {
     const tokensToClean: string[] = [];
 
@@ -36,5 +37,9 @@ export const marketplaceTest = base.extend<MarketplaceFixtures>({
         }
       }
     }
+  },
+
+  marketplaceRequest: async ({ request, createUser }, use) => {
+    await use(new MarketplaceRequest(request, getAuthHeader(createUser.token)));
   },
 });

@@ -14,6 +14,10 @@ export class MarketplaceRequest {
     this.myOffersUrl = apiUrls.marketplaceMyOffersUrl;
   }
 
+  async getOffers(): Promise<APIResponse> {
+    return await this.request.get(this.offersUrl, { headers: this.headers });
+  }
+
   async getMyOffers(): Promise<APIResponse> {
     return await this.request.get(this.myOffersUrl, { headers: this.headers });
   }
