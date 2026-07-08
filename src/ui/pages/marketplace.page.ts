@@ -13,6 +13,7 @@ export class MarketplacePage {
   readonly descriptionInput: Locator;
   readonly createOfferButton: Locator;
   readonly myOffersList: Locator;
+  readonly offersFilterInput: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -29,6 +30,9 @@ export class MarketplacePage {
       .locator('#createOfferForm')
       .getByRole('button', { name: 'Create Offer' });
     this.myOffersList = page.locator('#myOffers');
+    this.offersFilterInput = page.getByPlaceholder(
+      'Filter offers by any text...',
+    );
   }
 
   async goto(): Promise<void> {
@@ -51,5 +55,11 @@ export class MarketplacePage {
     await this.priceInput.fill(String(price));
     await this.descriptionInput.fill(description);
     await this.createOfferButton.click();
+  }
+
+  async buyOffer(offerId: number, sellerLabel: string): Promise<void> {
+    await this.offersFilterInput.fill(sellerLabel);
+    await this.page.locator(`.btn-buy[data-offer-id="${offerId}"]`).click();
+    await this.page.getByTestId('confirmation-modal-confirm').click();
   }
 }

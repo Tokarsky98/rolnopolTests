@@ -18,6 +18,18 @@ export class MarketplaceRequest {
     return await this.request.get(this.offersUrl, { headers: this.headers });
   }
 
+  async createOffer(data: {
+    itemType: string;
+    itemId: number;
+    price: number;
+    description?: string;
+  }): Promise<APIResponse> {
+    return await this.request.post(this.offersUrl, {
+      headers: this.headers,
+      data,
+    });
+  }
+
   async getMyOffers(): Promise<APIResponse> {
     return await this.request.get(this.myOffersUrl, { headers: this.headers });
   }
