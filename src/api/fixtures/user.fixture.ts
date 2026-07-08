@@ -23,6 +23,7 @@ type UserFixtures = {
   createUser: CreatedUser;
 };
 
+// Registers users via the API for a test and deletes them all afterwards.
 export const userTest = base.extend<UserFixtures>({
   userApiHelper: async ({ request }, use) => {
     const authRequest = new AuthRequest(request);
@@ -60,7 +61,7 @@ export const userTest = base.extend<UserFixtures>({
     }
   },
 
-  // For tests that just need one ready-made user, no explicit call needed.
+  // Shortcut for tests that just need one ready-made user, no explicit call needed.
   createUser: async ({ userApiHelper }, use) => {
     const createdUser = await userApiHelper.createUser();
     await use(createdUser);
