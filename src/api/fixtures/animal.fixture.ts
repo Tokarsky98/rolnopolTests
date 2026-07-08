@@ -7,7 +7,10 @@ import { test as base, expect } from '@playwright/test';
 export type CreatedAnimal = AnimalModel & { id: number };
 
 type AnimalApiHelper = {
-  createAnimal: (token: string) => Promise<CreatedAnimal>;
+  createAnimal: (
+    token: string,
+    overrides?: Partial<AnimalModel>,
+  ) => Promise<CreatedAnimal>;
 };
 
 type AnimalFixtures = {
@@ -19,8 +22,8 @@ export const animalTest = base.extend<AnimalFixtures>({
     const createdAnimals: { id: number; token: string }[] = [];
 
     await use({
-      createAnimal: async (token) => {
-        const animalData = randomAnimal();
+      createAnimal: async (token, overrides) => {
+        const animalData = randomAnimal(overrides);
         const animalsRequest = new AnimalsRequest(
           request,
           getAuthHeader(token),
