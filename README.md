@@ -1,6 +1,6 @@
 # rolnopolTests
 
-Playwright test framework for [Rolnopol](https://github.com/jaktestowac/rolnopol), a farming management app.
+Playwright test framework for [Rolnopol](https://github.com/jaktestowac/rolnopol), a farming management app. See [ARCHITECTURE.md](./ARCHITECTURE.md) for how the framework is structured.
 
 ## Setup
 
