@@ -13,6 +13,10 @@ export class AnimalsRequest {
     this.url = apiUrls.animalsUrl;
   }
 
+  async getAll(): Promise<APIResponse> {
+    return await this.request.get(this.url, { headers: this.headers });
+  }
+
   async create(data: AnimalModel): Promise<APIResponse> {
     return await this.request.post(this.url, { headers: this.headers, data });
   }
