@@ -5,10 +5,7 @@ export default defineConfig({
   testDir: './tests',
   timeout: 45_000,
   expect: { timeout: 10_000 },
-  // The target app under test persists users/sessions to JSON files on disk using
-  // synchronous writes (see rolnopol/helpers/token.helpers.js: persistTokenStorage).
-  // Concurrent requests can stall the single-threaded server under file contention,
-  // so tests are run with a single worker to keep the suite reliable.
+  // Single worker: the app can't reliably handle concurrent login/register requests.
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
