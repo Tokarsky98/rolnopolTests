@@ -1,8 +1,10 @@
 import { CreatedAnimal } from '@_api/fixtures/animal.fixture';
+import { NotificationComponent } from '@_ui/components/notification.component';
 import { Locator, Page } from '@playwright/test';
 
 export class MarketplacePage {
   readonly page: Page;
+  readonly notification: NotificationComponent;
   readonly createOfferTab: Locator;
   readonly myOffersTab: Locator;
   readonly itemTypeSelect: Locator;
@@ -14,6 +16,7 @@ export class MarketplacePage {
 
   constructor(page: Page) {
     this.page = page;
+    this.notification = new NotificationComponent(page);
     this.createOfferTab = page
       .locator('.marketplace-tabs')
       .getByRole('button', { name: 'Create Offer' });
